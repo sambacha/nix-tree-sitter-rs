@@ -1,0 +1,44 @@
+{
+  "name": "tree-sitter-nix",
+  "version": "1.0.0",
+  "description": "Nix grammar for tree-sitter",
+  "main": "bindings/node",
+  "keywords": [
+    "parser",
+    "tree-sitter",
+    "nix",
+    "nixos",
+    "nixpkgs"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nix-community/tree-sitter-nix"
+  },
+  "author": "Nix Community",
+  "license": "MIT",
+  "dependencies": {
+    "nan": "^2.18.0"
+  },
+  "devDependencies": {
+    "tree-sitter-cli": "^0.20.8"
+  },
+  "scripts": {
+    "build": "tree-sitter generate",
+    "test": "tree-sitter test"
+  },
+  "tree-sitter": [
+    {
+      "scope": "source.nix",
+      "path": ".",
+      "file-types": [
+        "nix"
+      ],
+      "highlights": "queries/highlights.scm",
+      "injections": "queries/injections.scm",
+      "locals": "queries/locals.scm",
+      "tags": "queries/tags.scm",
+      "folds": "queries/folds.scm",
+      "indents": "queries/indents.scm"
+    }
+  ]
+}

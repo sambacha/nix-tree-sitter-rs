@@ -1,0 +1,100 @@
+================================================================================
+Attribute set
+================================================================================
+
+{ x = 1; y = 2; }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  expression: (attrset
+    bindings: (binding
+      attrpath: (attrpath
+        (identifier))
+      expression: (integer))
+    bindings: (binding
+      attrpath: (attrpath
+        (identifier))
+      expression: (integer))))
+
+================================================================================
+Recursive attribute set
+================================================================================
+
+rec { a = 1; b = a + 1; }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  expression: (rec_attrset
+    bindings: (binding
+      attrpath: (attrpath
+        (identifier))
+      expression: (integer))
+    bindings: (binding
+      attrpath: (attrpath
+        (identifier))
+      expression: (binary_expression
+        left: (identifier)
+        right: (integer)))))
+
+================================================================================
+List
+================================================================================
+
+[ 1 2 3 ]
+
+--------------------------------------------------------------------------------
+
+(source_file
+  expression: (list
+    elements: (application
+      function: (application
+        function: (integer)
+        argument: (integer))
+      argument: (integer))))
+
+================================================================================
+Let expression
+================================================================================
+
+let x = 1; in x
+
+--------------------------------------------------------------------------------
+
+(source_file
+  expression: (let_expression
+    bindings: (binding
+      attrpath: (attrpath
+        (identifier))
+      expression: (integer))
+    body: (identifier)))
+
+================================================================================
+Function
+================================================================================
+
+x: x + 1
+
+--------------------------------------------------------------------------------
+
+(source_file
+  expression: (function_expression
+    parameter: (identifier)
+    body: (binary_expression
+      left: (identifier)
+      right: (integer))))
+
+================================================================================
+If expression
+================================================================================
+
+if true then 1 else 0
+
+--------------------------------------------------------------------------------
+
+(source_file
+  expression: (if_expression
+    condition: (boolean)
+    consequence: (integer)
+    alternative: (integer)))
