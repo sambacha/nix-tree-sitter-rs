@@ -26,7 +26,7 @@ pub fn language() -> Language {
 pub enum NodeType {
     // Root
     SourceFile,
-    
+
     // Literals
     Integer,
     Float,
@@ -37,12 +37,12 @@ pub enum NodeType {
     Identifier,
     Path,
     Uri,
-    
+
     // Collections
     List,
     Attrset,
     RecAttrset,
-    
+
     // Expressions
     BinaryExpression,
     UnaryExpression,
@@ -53,24 +53,24 @@ pub enum NodeType {
     WithExpression,
     AssertExpression,
     ParenthesizedExpression,
-    
+
     // Attribute operations
     Select,
     HasAttr,
-    
+
     // Structural
     Binding,
     Inherit,
     Attrpath,
     Formals,
     Formal,
-    
+
     // String parts
     StringInterpolation,
-    
+
     // Comments and whitespace
     Comment,
-    
+
     // Error nodes
     Error,
     Missing,
@@ -115,7 +115,7 @@ impl NodeType {
             NodeType::Missing,
         ]
     }
-    
+
     /// Get the string representation of the node type
     pub const fn as_str(self) -> &'static str {
         match self {
@@ -154,7 +154,7 @@ impl NodeType {
             NodeType::Missing => "MISSING",
         }
     }
-    
+
     /// Parse a node type from a string
     pub fn from_str(s: &str) -> Option<Self> {
         match s {
@@ -194,20 +194,20 @@ impl NodeType {
             _ => None,
         }
     }
-    
+
     /// Check if this node type represents a literal value
     pub const fn is_literal(self) -> bool {
-        matches!(self, 
-                 NodeType::Integer | 
-                 NodeType::Float | 
-                 NodeType::String | 
-                 NodeType::IndentedString | 
-                 NodeType::Boolean | 
+        matches!(self,
+                 NodeType::Integer |
+                 NodeType::Float |
+                 NodeType::String |
+                 NodeType::IndentedString |
+                 NodeType::Boolean |
                  NodeType::Null |
                  NodeType::Path |
                  NodeType::Uri)
     }
-    
+
     /// Check if this node type represents an expression
     pub const fn is_expression(self) -> bool {
         matches!(self,
@@ -226,7 +226,7 @@ impl NodeType {
                  NodeType::Attrset |
                  NodeType::RecAttrset) || self.is_literal()
     }
-    
+
     /// Check if this node type represents an error condition
     pub const fn is_error(self) -> bool {
         matches!(self, NodeType::Error | NodeType::Missing)
@@ -241,7 +241,7 @@ impl std::fmt::Display for NodeType {
 
 impl std::str::FromStr for NodeType {
     type Err = String;
-    
+
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         NodeType::from_str(s).ok_or_else(|| format!("Unknown node type: {}", s))
     }
@@ -255,37 +255,37 @@ pub enum FieldName {
     // General
     Expression,
     Body,
-    
+
     // Binary expressions
     Left,
     Right,
     Operator,
-    
-    // Unary expressions  
+
+    // Unary expressions
     Argument,
-    
+
     // Functions
     Function,
     Parameter,
-    
+
     // Control flow
     Condition,
     Consequence,
     Alternative,
-    
+
     // Let expressions
     Bindings,
-    
+
     // Attribute sets
     Attrpath,
-    
+
     // Lists
     Elements,
-    
+
     // Attributes
     Name,
     Default,
-    
+
     // Inheritance
     From,
     Attributes,
@@ -327,33 +327,33 @@ impl std::fmt::Display for FieldName {
 pub mod validation {
     use super::*;
     use tree_sitter::Node;
-    
+
     /// Check if a node has the expected type
     pub fn validate_node_type(node: Node, expected: NodeType) -> bool {
         node.kind() == expected.as_str()
     }
-    
+
     /// Check if a node has a required field
     pub fn has_required_field(node: Node, field: FieldName) -> bool {
         node.child_by_field_name(field.as_str()).is_some()
     }
-    
+
     /// Validate that a node structure matches expectations
     pub fn validate_node_structure(node: Node, node_type: NodeType, required_fields: &[FieldName]) -> Vec<String> {
         let mut errors = Vec::new();
-        
+
         // Check node type
         if !validate_node_type(node, node_type) {
             errors.push(format!("Expected {} but got {}", node_type, node.kind()));
         }
-        
+
         // Check required fields
         for field in required_fields {
             if !has_required_field(node, *field) {
                 errors.push(format!("Missing required field: {}", field));
             }
         }
-        
+
         errors
     }
 }
@@ -373,7 +373,7 @@ mod tests {
         assert_eq!(NodeType::Integer.as_str(), "integer");
         assert_eq!(NodeType::from_str("integer"), Some(NodeType::Integer));
         assert_eq!(NodeType::from_str("invalid"), None);
-        
+
         let parsed: Result<NodeType, _> = "float".parse();
         assert_eq!(parsed.unwrap(), NodeType::Float);
     }
@@ -383,11 +383,11 @@ mod tests {
         assert!(NodeType::Integer.is_literal());
         assert!(NodeType::Integer.is_expression());
         assert!(!NodeType::Integer.is_error());
-        
+
         assert!(!NodeType::BinaryExpression.is_literal());
         assert!(NodeType::BinaryExpression.is_expression());
         assert!(!NodeType::BinaryExpression.is_error());
-        
+
         assert!(!NodeType::Error.is_literal());
         assert!(!NodeType::Error.is_expression());
         assert!(NodeType::Error.is_error());
@@ -406,7 +406,7 @@ mod tests {
         for node_type in NodeType::all() {
             let s = node_type.as_str();
             assert!(!s.is_empty());
-            
+
             // Test round-trip conversion (except for error types which have special strings)
             if !node_type.is_error() {
                 assert_eq!(NodeType::from_str(s), Some(*node_type));
